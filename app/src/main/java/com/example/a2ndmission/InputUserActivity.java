@@ -19,10 +19,15 @@ public class InputUserActivity extends AppCompatActivity {
     private Button inputuser_button;
     private ImageView type_image;
     private TextView textedit_name, textedit_age, textedit_address;
+    public user use;
+    public int pos;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_inputuser);
+        use = getIntent().getParcelableExtra("data");
+        pos = getIntent().getIntExtra("pos",0);
         initView();
         setListener();
         back();
@@ -38,20 +43,24 @@ public class InputUserActivity extends AppCompatActivity {
     }
 
     private void setListener() {
-        Bundle bundle = getIntent().getExtras();
-        if(bundle !=null){
-            inputuser_button.setText("Update");
-            textedit_name.setText(bundle.getString("name"));
-            textedit_age.setText(String.valueOf(bundle.getInt("age")));
-            textedit_address.setText(bundle.getString("address"));
-        }else{
-            inputuser_button.setText("Save Data");
-        }
         inputuser_button.setOnClickListener(new View.OnClickListener() {
             final LoadingDialog loadingDialog = new LoadingDialog(InputUserActivity.this);
             @Override
             public void onClick(View v) {
-                if(bundle ==null) {
+                if(use!=null){
+                    textedit_name.setText(use.getName());
+                    textedit_age.setText(String.valueOf(use.getAge()));
+                    textedit_address.setText(use.getAddress());
+                    String name = inputuser_name.getEditText().getText().toString().trim();
+                    int age = Integer.parseInt(inputuser_age.getEditText().getText().toString().trim());
+                    String address = inputuser_address.getEditText().getText().toString().trim();
+                    user datauser = new user(name,address,age);
+                    Intent intent = new Intent();
+                    intent.putExtra("UserEdit", datauser);
+                    intent.putExtra("position", pos);
+                    startActivity(intent);
+                    finish();
+                }else{
                     String name = inputuser_name.getEditText().getText().toString().trim();
                     int age = Integer.parseInt(inputuser_age.getEditText().getText().toString().trim());
                     String address = inputuser_address.getEditText().getText().toString().trim();
@@ -59,16 +68,6 @@ public class InputUserActivity extends AppCompatActivity {
                     loadingDialog.startLoadingDialog();
                     Intent intent = new Intent();
                     intent.putExtra("UserBaru", dataUser);
-                    setResult(200, intent);
-                    finish();
-                }else{
-                    String name = inputuser_name.getEditText().getText().toString().trim();
-                    int age = Integer.parseInt(inputuser_age.getEditText().getText().toString().trim());
-                    String address = inputuser_address.getEditText().getText().toString().trim();
-                    user dataUser = new user(name,address,age);
-                    loadingDialog.startLoadingDialog();
-                    Intent intent = new Intent();
-                    intent.putExtra("EditUser", dataUser);
                     setResult(200, intent);
                     finish();
                 }

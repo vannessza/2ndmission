@@ -39,17 +39,6 @@ public class UserRVAdapter extends RecyclerView.Adapter<UserRVAdapter.UserViewHo
         holder.card_name.setText(ListUser.get(position).getName());
         holder.card_age.setText(String.valueOf(ListUser.get(position).getAge()));
         holder.card_address.setText(ListUser.get(position).getAddress());
-        holder.constraint_layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, DataUser.class);
-                intent.putExtra("pos",ListUser.get(position));
-                intent.putExtra("name",ListUser.get(position).getName());
-                intent.putExtra("age",ListUser.get(position).getAge());
-                intent.putExtra("address",ListUser.get(position).getAddress());
-                context.startActivity(intent);
-            }
-        });
     }
 
     @Override
@@ -66,6 +55,15 @@ public class UserRVAdapter extends RecyclerView.Adapter<UserRVAdapter.UserViewHo
             card_age = itemView.findViewById(R.id.card_age);
             card_address = itemView.findViewById(R.id.card_address);
             constraint_layout = itemView.findViewById(R.id.constraint_layout);
+            constraint_layout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    Intent intent = new Intent(context, DataUser.class);
+                    intent.putExtra("datauser",ListUser.get(getAdapterPosition()));
+                    intent.putExtra("pos",getAdapterPosition());
+                    context.startActivity(intent);
+                }
+            });
         }
     }
 }

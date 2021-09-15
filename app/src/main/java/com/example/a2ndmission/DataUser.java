@@ -5,44 +5,49 @@ import androidx.appcompat.app.AppCompatActivity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 
 import model.user;
+import model.usersave;
 
 public class DataUser extends AppCompatActivity {
     private TextView card_profile_name, card_profile_age, card_profile_address;
     private ImageView card_profile_edit, card_profile_delete, card_profile_back;
-    private ArrayList<user> ListUser;
+    private ArrayList<user> ListUser= usersave.savelist;
     public int pos;
+    public user use;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
           super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_data_user);
         initview();
-        setListener();
         back();
         Edit();
         delete();
+        use = getIntent().getParcelableExtra("datauser");
+        pos = getIntent().getIntExtra("pos",0);
+
+        card_profile_name.setText(use.getName());
+        card_profile_age.setText(String.valueOf(use.getAge()));
+        card_profile_address.setText(use.getAddress());
     }
 
     private void delete() {
         card_profile_delete.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                DialogInterface.OnClickListener dialog = new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int choose) {
-                        switch (choose){
-                            case DialogInterface.BUTTON_POSITIVE:
+                ListUser.remove(pos);
+                Log.d("test", String.valueOf(pos));
 
-                                ListUser.remove()
-                        }
-                    }
-                };
+                Toast.makeText(DataUser.this, "Delete Seccess", Toast.LENGTH_LONG).show();
+                Intent intent = new Intent(DataUser.this, MainActivity.class);
+                startActivity(intent);
 
             }
         });
@@ -52,12 +57,11 @@ public class DataUser extends AppCompatActivity {
         card_profile_edit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(getBaseContext(), InputUserActivity.class);
-                Bundle bundle = getIntent().getExtras();
-                intent.putExtra("name",bundle.getString("name"));
-                intent.putExtra("age",bundle.getInt("age"));
-                intent.putExtra("address",bundle.getString("address"));
+                Intent intent = new Intent(getBaseContext(),InputUserActivity.class);
+                intent.putExtra("data", use);
+                intent.putExtra("pos", pos);
                 startActivity(intent);
+                finish();
             }
         });
     }
@@ -71,16 +75,6 @@ public class DataUser extends AppCompatActivity {
         });
     }
 
-    private void setListener() {
-        Bundle bundle = getIntent().getExtras();
-        String name = bundle.getString("name");
-        int age = bundle.getInt("age");
-        String address = bundle.getString("address");
-
-        card_profile_name.setText(name);
-        card_profile_age.setText(String.valueOf(age));
-        card_profile_address.setText(address);
-    }
 
     private void setBundle() {
     }
@@ -92,6 +86,5 @@ public class DataUser extends AppCompatActivity {
         card_profile_edit = findViewById(R.id.card_profile_edit);
         card_profile_delete = findViewById(R.id.card_profile_delete);
         card_profile_back = findViewById(R.id.card_profile_back);
-        ListUser = new ArrayList<user>();
     }
 }

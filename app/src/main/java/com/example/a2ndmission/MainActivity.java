@@ -16,12 +16,14 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 import java.util.ArrayList;
 
 import model.user;
+import model.usersave;
 
 public class MainActivity extends AppCompatActivity {
     private RecyclerView recyclerview_recyclerview;
     private TextView recyclerview_nodata;
     private UserRVAdapter adapter;
     private ArrayList<user> datauser;
+    private ArrayList<user> ListUser= usersave.savelist;
     private FloatingActionButton recyclerview_FAB_add;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -30,6 +32,17 @@ public class MainActivity extends AppCompatActivity {
         initView();
         setupRecyclerView();
         setListener();
+        updata();
+    }
+
+    private void updata() {
+        user user = getIntent().getParcelableExtra("UserEdit");
+        int pos =getIntent().getIntExtra("pos",0);
+        if(user !=null){
+            ListUser.remove(pos);
+            ListUser.add(pos, user);
+            adapter.notifyItemChanged(pos);
+        }
     }
 
     @Override
